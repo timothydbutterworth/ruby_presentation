@@ -1,0 +1,3 @@
+def sep
+  puts "-----------"
+end
