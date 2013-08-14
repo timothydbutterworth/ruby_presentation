@@ -1,8 +1,26 @@
-def compose(proc1, proc2)
-
+def pipe_wrap(proc)
+  pipe_wrap = Proc.new do |num|
+    wrapper = " "
+    if(num!=" " && num!="")
+      wrapper = "|"
+    end
+    wrapper + proc.call(num)
+  end
+  return pipe_wrap
+end
+def simple_alignment(proc, width)
+  alignment = Proc.new do |num|
+    str = num.to_s
+    l = str.length
+    (width-l).times do
+      str = proc.call(str)
+    end
+    str
+  end
+  return alignment
 end
 def toLine(wdth, arry, alignment)
-  result, spaces = ["", ""]
+  result = ""
   filled = []
   ((wdth - arry.length)/2).times { filled << ""}
   filled = filled + arry
@@ -23,7 +41,6 @@ if(ARGV!=nil && ARGV.length>0)
 end
 
 wdth = size*2-1
-
 width = 2*(size.to_s.length)
 
 center = Proc.new do |num|
@@ -52,19 +69,27 @@ right = Proc.new do |num|
   end
   str
 end
-pipecenter = Proc.new do |num|
-  wrapper = " "
-  if(num!=" " && num!="")
-    wrapper = "|"
-  end
-  wrapper + center.call(num)
-end
+
+
+
+
+
+
+
+
+
+l_proc = Proc.new { |str| str+" "}
+r_proc = Proc.new { |str| " "+str}
+left = simple_alignment(l_proc, width)
+right = simple_alignment(r_proc, width)
 
 alignment = {}
 alignment["left"] = left
 alignment["right"] = right
 alignment["center"] = center
-alignment["pipecenter"] = pipecenter
+alignment["pipecenter"] = pipe_wrap(center)
+alignment["piperight"] = pipe_wrap(right)
+alignment["pipeleft"] = pipe_wrap(left)
 
 use_alignment = alignment[align_key]
 if(use_alignment==nil)
