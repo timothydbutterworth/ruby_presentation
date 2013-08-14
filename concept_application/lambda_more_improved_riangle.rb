@@ -1,19 +1,19 @@
-def pipe_wrap(proc)
-  pipe_wrap = Proc.new do |num|
+def pipe_wrap(block)
+  pipe_wrap = lambda do |num|
     wrapper = " "
     if(num!=" " && num!="")
       wrapper = "|"
     end
-    wrapper + proc.call(num)
+    wrapper + block.call(num)
   end
   return pipe_wrap
 end
-def simple_alignment(proc, width)
-  alignment = Proc.new do |num|
+def simple_alignment(block, width)
+  alignment = lambda do |num|
     str = num.to_s
     l = str.length
     (width-l).times do
-      str = proc.call(str)
+      str = block.call(str)
     end
     str
   end
@@ -43,7 +43,7 @@ end
 wdth = size*2-1
 width = 2+(size.to_s.length)
 
-center = Proc.new do |num|
+center = lambda do |num|
   str = num.to_s
   l = str.length
   i = -1
@@ -51,37 +51,13 @@ center = Proc.new do |num|
     str = ((i==-1) ? " "+str : str + " " )
     i*=-1
   end
-  str
-end
-left = Proc.new do |num|
-  str = num.to_s
-  l = str.length
-  (width-l).times do
-    str = str+" "
-  end
-  str
-end
-right = Proc.new do |num|
-  str = num.to_s
-  l = str.length
-  (width-l).times do
-    str = " "+str
-  end
-  str
+  return str
 end
 
-
-
-
-
-
-
-
-
-l_proc = Proc.new { |str| str+" "}
-r_proc = Proc.new { |str| " "+str}
-left = simple_alignment(l_proc, width)
-right = simple_alignment(r_proc, width)
+l_lam = lambda { |str| str+" "}
+r_lam = lambda { |str| " "+str}
+left = simple_alignment(l_lam, width)
+right = simple_alignment(r_lam, width)
 
 alignment = {}
 alignment["left"] = left
